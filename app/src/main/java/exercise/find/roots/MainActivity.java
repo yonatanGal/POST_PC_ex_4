@@ -144,9 +144,9 @@ when calculation is aborted as it took too much time:
 
 upon screen rotation (saveState && loadState) the new screen should show exactly the same state as the old screen. this means:
 * edit-text shows the same input
-* edit-text is disabled/enabled based on current "is calculating?" state
-* progress is showing/hidden based on current "is calculating?" state
-* button is enabled/disabled based on current "is calculating?" state && if there is a valid number in the edit-text input
+* edit-text is disabled/enabled based on current "is waiting for calculation?" state
+* progress is showing/hidden based on current "is waiting for calculation?" state
+* button is enabled/disabled based on current "is waiting for calculation?" state && there is a valid number in the edit-text input
 
 
  */
