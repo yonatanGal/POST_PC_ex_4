@@ -35,7 +35,7 @@ public class CalculateRootsServiceTest extends TestCase {
     // capture all broadcasts
     List<Intent> broadcastedIntents = shadowOf(RuntimeEnvironment.application).getBroadcastIntents();
     if (broadcastedIntents.size() != 1) {
-      fail("expecting only 1 broadcast to be sent");
+      fail("expecting exactly 1 broadcast to be sent");
     }
 
     // verify the broadcast sent by the service
