@@ -4,19 +4,20 @@ An Android exercise for developers teaching how to play around with intents, act
 
 ## To fulfill this exercise:
 
-- take a loot at file CalculateRootsService.java
+> take a loot at file `CalculateRootsService.java`
+
 This service accepts an intent with a number to find roots for.
 You should calculate the roots until either roots found, understood that the number is prime, or 20 seconds passed.
 You should send a broadcast from this service.
 
-> take a loot at file MainActivity.java
+> take a loot at file `MainActivity.java`
 
 The MainActivity has UI to let the user input a number and start the service.
 The UI flow is detailed in the `MainActivity.java` file and contains relevant spec for:
     1. start find-roots calculation service
     2. handle different result broadcasts from the service
 
-> take a look at file AndroidManifest.xml
+> take a look at file `AndroidManifest.xml`
 
 The `AndroidManifest.xml` file holds definitions for all activities and services in your app.
 Any class extending `Activity` or `Service` must be defined there, or else you can't use it in your app.
@@ -30,13 +31,13 @@ You will need to:
 
 ## Tests:
 
-> take a loot at file CalculateRootsServiceTest.java
+> take a loot at file `CalculateRootsServiceTest.java`
 
 There is a single test there that validates good behavior of the `CalculateRootsService` when it needs to calculate roots for the input 15
 Make sure you read and understand this test.
 Run the test and make sure you it passes.
 
-> take a loot at file MainActivityTest.java
+> take a loot at file `MainActivityTest.java`
 
 There are some tests already written there.
 Make sure you read and understand the existing tests.
@@ -46,5 +47,7 @@ Run the tests and make sure you they all pass.
 ## In general:
 
 In the bottom-left part of the screen there is a `TODO` tab. click it. implement all the TODOs I defined for you :)
+
+---
 
 ✨ Good luck! ✨
