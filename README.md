@@ -50,7 +50,7 @@ Run the tests and make sure you they all pass.
 
 See the diagram:
 
-[project diagram](project_diagram.png)
+![project diagram](project_diagram.png)
 
 In the bottom-left part of the screen there is a `TODO` tab. click it. You can see all the places where you should work :)
 
