@@ -13,13 +13,14 @@ You should send a broadcast from this service.
 > take a loot at file `MainActivity.java`
 
 The MainActivity has UI to let the user input a number and start the service.
-The UI flow is detailed in the `MainActivity.java` file and contains relevant spec for:
-    1. start find-roots calculation service
-    2. handle different result broadcasts from the service
+The *UI flow specs* is detailed in the file `MainActivity.java` and contains relevant spec for:
+1. when to start find-roots calculation service
+2. what to do when waiting for a result
+3. handle different result broadcasts from the service
 
 > take a look at file `AndroidManifest.xml`
 
-The `AndroidManifest.xml` file holds definitions for all activities and services in your app.
+The file `AndroidManifest.xml` holds definitions for all activities and services in your app.
 Any class extending `Activity` or `Service` must be defined there, or else you can't use it in your app.
 As part of handling "found roots" broadcast, the MainActivity needs to open a new activity to show "success!"
 You will need to:
@@ -27,7 +28,8 @@ You will need to:
    This file will be used as the "success!" screen.
 2. create a new class extending Activity (in Java/Kotlin), which will use the new layout xml file
 3. add an <activity ...> tag in the `AndroidManifest.xml` so the new activity could be used in your app
-4. When you will open this new activity from the MainActivity, pass the number and its root in the intent 
+4. When you will open this new activity from the MainActivity, pass the number and its root in the intent
+If you're unsure how to do this, google search "android create new activity" and "android pass data to another activity". 
 
 ## Tests:
 
