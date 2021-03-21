@@ -17,7 +17,7 @@ public class MainActivityTest extends TestCase {
 
   @Test
   public void when_activityIsLaunching_then_theButtonShouldStartDisabled(){
-    // create MainActivity and let it think it's displayed on the screen currently
+    // create a MainActivity and let it think it's currently displayed on the screen
     MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().visible().get();
 
     // test: make sure that the "calculate" button is disabled
@@ -27,7 +27,7 @@ public class MainActivityTest extends TestCase {
 
   @Test
   public void when_activityIsLaunching_then_theEditTextShouldStartEmpty(){
-    // create MainActivity and let it think it's displayed on the screen currently
+    // create a MainActivity and let it think it's currently displayed on the screen
     MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().visible().get();
 
     // test: make sure that the "input" edit-text has no text
@@ -38,7 +38,7 @@ public class MainActivityTest extends TestCase {
 
   @Test
   public void when_userIsEnteringNumberInput_and_noCalculationAlreadyHappned_then_theButtonShouldBeEnabled(){
-    // create MainActivity and let it think it's displayed on the screen currently
+    // create a MainActivity and let it think it's currently displayed on the screen
     MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().visible().get();
 
     // find the edit-text and the button
@@ -49,11 +49,11 @@ public class MainActivityTest extends TestCase {
     // TODO: implement
   }
 
-  // TODO: add 1 or 2 more unit tests to the activity. so you won't get rusty.
+  // TODO: add 1 or 2 more unit tests to the activity. so your "writing tests" skill won't get rusty.
   //  possible flows to unit-test:
   //  - when activity launches, "progress" starts hidden
   //  - when inserting a good number and clicking the button, "progress" should be displayed
-  //  - when user is entering a bad input (e.g. "17.3") the button should be disabled
+  //  - when user is entering a bad input (for example "17.3") the button should be disabled
   //  - when user is entering a good input and than deleting it, the button should be enabled and then disabled again
   //  - when user entered input and than activity recreates (user flipped the screen), the input in the new edit text is still there
   //  - when starting a calculation the button should be locked (disabled)
