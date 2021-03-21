@@ -35,16 +35,16 @@ public class CalculateRootsServiceTest extends TestCase {
     // capture all broadcasts
     List<Intent> broadcastedIntents = shadowOf(RuntimeEnvironment.application).getBroadcastIntents();
     if (broadcastedIntents.size() != 1) {
-      fail("expecting exactly 1 broadcast to be sent");
+      fail("expecting exactly 1 broadcast to be sent by the service");
     }
 
-    // verify the broadcast sent by the service
-    Intent intentSentByService = broadcastedIntents.get(0);
-    assertNotNull(intentSentByService);
-    assertEquals("found_roots", intentSentByService.getAction());
-    long originalNumber = intentSentByService.getLongExtra("original_number", 0);
-    long firstRoot = intentSentByService.getLongExtra("root1", 0);
-    long secondRoot = intentSentByService.getLongExtra("root2", 0);
+    // verify the broadcast that was sent by the service has all the data we expect
+    Intent broadcastFromService = broadcastedIntents.get(0);
+    assertNotNull(broadcastFromService);
+    assertEquals("found_roots", broadcastFromService.getAction());
+    long originalNumber = broadcastFromService.getLongExtra("original_number", 0);
+    long firstRoot = broadcastFromService.getLongExtra("root1", 0);
+    long secondRoot = broadcastFromService.getLongExtra("root2", 0);
     assertEquals(15, originalNumber);
     assertEquals(15, firstRoot * secondRoot);
   }
