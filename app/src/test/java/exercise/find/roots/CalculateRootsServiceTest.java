@@ -44,7 +44,7 @@ public class CalculateRootsServiceTest extends TestCase {
     assertEquals("found_roots", intentSentByService.getAction());
     long originalNumber = intentSentByService.getLongExtra("original_number", 0);
     long firstRoot = intentSentByService.getLongExtra("root1", 0);
-    long secondRoot = intentSentByService.getLongExtra("root1", 0);
+    long secondRoot = intentSentByService.getLongExtra("root2", 0);
     assertEquals(15, originalNumber);
     assertEquals(15, firstRoot * secondRoot);
   }
