@@ -7,17 +7,23 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity {
 
   private BroadcastReceiver broadcastReceiverForSuccess = null;
+  private BroadcastReceiver broadcastReceiverForFailure = null;
   // TODO: add any other fields to the activity as you want
 
 
@@ -29,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar = findViewById(R.id.progressBar);
     EditText editTextUserInput = findViewById(R.id.editTextInputNumber);
     Button buttonCalculateRoots = findViewById(R.id.buttonCalculateRoots);
+    TextView alertTextView = findViewById(R.id.AlertTextView);
 
     // set initial UI:
     progressBar.setVisibility(View.GONE); // hide progress
@@ -43,7 +50,19 @@ public class MainActivity extends AppCompatActivity {
       public void afterTextChanged(Editable s) {
         // text did change
         String newText = editTextUserInput.getText().toString();
-        // todo: check conditions to decide if button should be enabled/disabled (see spec below)
+        if (!TextUtils.isDigitsOnly(newText) || newText.equals("0"))
+        {
+          buttonCalculateRoots.setEnabled(false);
+          if (!newText.equals(""))
+          {
+            alertTextView.setVisibility(View.VISIBLE);
+          }
+        }
+        else
+        {
+          buttonCalculateRoots.setEnabled(true);
+          alertTextView.setVisibility(View.INVISIBLE);
+        }
       }
     });
 
@@ -51,11 +70,12 @@ public class MainActivity extends AppCompatActivity {
     buttonCalculateRoots.setOnClickListener(v -> {
       Intent intentToOpenService = new Intent(MainActivity.this, CalculateRootsService.class);
       String userInputString = editTextUserInput.getText().toString();
-      // todo: check that `userInputString` is a number. handle bad input. convert `userInputString` to long
-      long userInputLong = 0; // todo this should be the converted string from the user
+      long userInputLong = Long.parseLong(userInputString);
       intentToOpenService.putExtra("number_for_service", userInputLong);
       startService(intentToOpenService);
-      // todo: set views states according to the spec (below)
+      buttonCalculateRoots.setEnabled(false);
+      editTextUserInput.setEnabled(false);
+      progressBar.setVisibility(View.VISIBLE);
     });
 
     // register a broadcast-receiver to handle action "found_roots"
@@ -63,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onReceive(Context context, Intent incomingIntent) {
         if (incomingIntent == null || !incomingIntent.getAction().equals("found_roots")) return;
+
         // success finding roots!
         /*
          TODO: handle "roots-found" as defined in the spec (below).
@@ -75,12 +96,18 @@ public class MainActivity extends AppCompatActivity {
     };
     registerReceiver(broadcastReceiverForSuccess, new IntentFilter("found_roots"));
 
-    /*
-    todo:
-     add a broadcast-receiver to listen for abort-calculating as defined in the spec (below)
-     to show a Toast, use this code:
-     `Toast.makeText(this, "text goes here", Toast.LENGTH_SHORT).show()`
-     */
+    broadcastReceiverForFailure = new BroadcastReceiver() {
+
+      @Override
+      public void onReceive(Context context, Intent incomingIntent) {
+        if (incomingIntent == null || !incomingIntent.getAction().equals("stopped_calculations")) return;
+        long timePassed = incomingIntent.getLongExtra("time_until_give_up_seconds", 0);
+        String toastAlertText = String.format("calculation aborted after %d seconds", timePassed);
+        Toast toast = Toast.makeText(MainActivity.this, toastAlertText, Toast.LENGTH_SHORT);
+        toast.show();
+      }
+    };
+    registerReceiver(broadcastReceiverForFailure, new IntentFilter("stopped_calculations"));
   }
 
   @Override
