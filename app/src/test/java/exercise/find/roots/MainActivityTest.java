@@ -44,7 +44,9 @@ public class MainActivityTest extends TestCase {
     // find the edit-text and the button
     EditText inputEditText = mainActivity.findViewById(R.id.editTextInputNumber);
     Button button = mainActivity.findViewById(R.id.buttonCalculateRoots);
-
+    
+    inputEditText.setText("110");
+    assertTrue(button.isEnabled());
     // test: insert input to the edit text and verify that the button is enabled
     // TODO: implement
   }

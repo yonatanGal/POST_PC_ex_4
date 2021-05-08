@@ -20,12 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import org.w3c.dom.Text;
 
+import java.math.BigInteger;
+
 public class MainActivity extends AppCompatActivity {
 
   private BroadcastReceiver broadcastReceiverForSuccess = null;
   private BroadcastReceiver broadcastReceiverForFailure = null;
-  // TODO: add any other fields to the activity as you want
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +50,22 @@ public class MainActivity extends AppCompatActivity {
       public void afterTextChanged(Editable s) {
         // text did change
         String newText = editTextUserInput.getText().toString();
-        if (!TextUtils.isDigitsOnly(newText) || newText.equals("0"))
-        {
+        boolean onlyDigits = TextUtils.isDigitsOnly(newText);
+        if (!onlyDigits || (newText.length() > 0 && newText.charAt(0) == '0')) {
           buttonCalculateRoots.setEnabled(false);
-          if (!newText.equals(""))
-          {
+          if (!newText.equals("")) {
             alertTextView.setVisibility(View.VISIBLE);
           }
+          return;
         }
-        else
+        else if (!newText.equals("") && new BigInteger(newText).compareTo(BigInteger.valueOf(Long.MAX_VALUE)) > 0)
         {
-          buttonCalculateRoots.setEnabled(true);
-          alertTextView.setVisibility(View.INVISIBLE);
+          buttonCalculateRoots.setEnabled(false);
+          alertTextView.setVisibility(View.VISIBLE);
+          return;
         }
+        buttonCalculateRoots.setEnabled(true);
+        alertTextView.setVisibility(View.INVISIBLE);
       }
     });
 
@@ -83,15 +86,17 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onReceive(Context context, Intent incomingIntent) {
         if (incomingIntent == null || !incomingIntent.getAction().equals("found_roots")) return;
+        progressBar.setVisibility(View.INVISIBLE);
+        editTextUserInput.setEnabled(true);
+        editTextUserInput.setText("");
+        buttonCalculateRoots.setEnabled(false);
 
-        // success finding roots!
-        /*
-         TODO: handle "roots-found" as defined in the spec (below).
-          also:
-           - the service found roots and passed them to you in the `incomingIntent`. extract them.
-           - when creating an intent to open the new-activity, pass the roots as extras to the new-activity intent
-             (see for example how did we pass an extra when starting the calculation-service)
-         */
+        long originalNumber = incomingIntent.getLongExtra("original_number", 0);
+        long root1 = incomingIntent.getLongExtra("root1", 0);
+        long root2 = incomingIntent.getLongExtra("root2",0);
+        long calcTime = (long) (incomingIntent.getLongExtra("calc_time", 0) / 1000f);
+        startSuccessActivity(root1, root2, originalNumber, calcTime);
+
       }
     };
     registerReceiver(broadcastReceiverForSuccess, new IntentFilter("found_roots"));
@@ -101,39 +106,54 @@ public class MainActivity extends AppCompatActivity {
       @Override
       public void onReceive(Context context, Intent incomingIntent) {
         if (incomingIntent == null || !incomingIntent.getAction().equals("stopped_calculations")) return;
-        long timePassed = incomingIntent.getLongExtra("time_until_give_up_seconds", 0);
+        long timePassed = (long) (incomingIntent.getLongExtra("time_until_give_up_seconds", 0) / 1000f);
         String toastAlertText = String.format("calculation aborted after %d seconds", timePassed);
         Toast toast = Toast.makeText(MainActivity.this, toastAlertText, Toast.LENGTH_SHORT);
         toast.show();
+        progressBar.setVisibility(View.INVISIBLE);
+        editTextUserInput.setEnabled(true);
+        editTextUserInput.setText("");
+        buttonCalculateRoots.setEnabled(false);
       }
     };
     registerReceiver(broadcastReceiverForFailure, new IntentFilter("stopped_calculations"));
   }
 
+  protected void startSuccessActivity(long root1, long root2, long originalNumber, long calcTime)
+  {
+    Intent intentToOpenSuccessActivity = new Intent(MainActivity.this, SuccessActivity.class);
+    intentToOpenSuccessActivity.putExtra("original_number", originalNumber);
+    intentToOpenSuccessActivity.putExtra("root_1", root1);
+    intentToOpenSuccessActivity.putExtra("root_2", root2);
+    intentToOpenSuccessActivity.putExtra("calc_time", calcTime);
+    startActivity(intentToOpenSuccessActivity);
+  }
+
+
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    // todo: remove ALL broadcast receivers we registered earlier in onCreate().
-    //  to remove a registered receiver, call method `this.unregisterReceiver(<receiver-to-remove>)`
+    this.unregisterReceiver(broadcastReceiverForFailure);
+    this.unregisterReceiver(broadcastReceiverForSuccess);
   }
 
   @Override
   protected void onSaveInstanceState(@NonNull Bundle outState) {
     super.onSaveInstanceState(outState);
-    // TODO: put relevant data into bundle as you see fit
+    EditText editText = findViewById(R.id.editTextInputNumber);
+    outState.putString("curText", editText.getText().toString());
   }
 
   @Override
   protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
     super.onRestoreInstanceState(savedInstanceState);
-    // TODO: load data from bundle and set screen state (see spec below)
+    EditText editText = findViewById(R.id.editTextInputNumber);
+    editText.setText(savedInstanceState.getString("curText"));
   }
 }
 
 
 /*
-
-TODO:
 the spec is:
 
 upon launch, Activity starts out "clean":
